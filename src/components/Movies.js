@@ -27,11 +27,14 @@ function Movies() {
     const [currentPage, setCurrentPage] = useState(1);
     const [watchList, setWatchList] = useState(JSON.parse(localStorage.getItem("imdb") || "[]"));
     const [hoveredMovie, setHoveredMovie] = useState(null);
+    const [loading, setLoading] = useState(false);
     const getAllMovies = async () => {
         //make api call
+        setLoading(true);
         const response = await axios.get(`https://api.themoviedb.org/3/trending/movie/day?api_key=e730c1e815f9b41fd98df882b4fd7276&page=${currentPage}`);
         const moviesRes = response.data.results;
         setMovies(moviesRes);
+        setLoading(false);
         console.log(moviesRes);
     }
     const decreasePageNo = () => {
@@ -73,7 +76,15 @@ function Movies() {
         <div>
             <div className="text-2xl mb-8 font-bold text-center mt-4"> Trending Movies</div>
             <div className="flex justify-around flex-wrap">
-                { movies.map((movie)=> {
+               
+                { loading ? (
+                <button type="button" class="bg-indigo-500 ..." disabled>
+                <svg class="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24">
+                  
+                </svg>
+                Processing...
+              </button> ) : 
+                 movies.map((movie)=> {
                     return (
                         <div
                         onMouseOver={() => setHoveredMovie(movie.id)}
@@ -104,7 +115,7 @@ function Movies() {
                             </div>
                         </div>
                     )
-                })}
+                })} 
             </div>
             <Pagination page={currentPage} decreasePageNo ={decreasePageNo} increasePageNo ={increasePageNo} resetPageNo= {resetPageNo}/>
         </div>
