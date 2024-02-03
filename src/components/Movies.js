@@ -38,6 +38,11 @@ function Movies() {
         console.log("increase");
         setCurrentPage(1);
     }
+      //this useEffect will becalled only when currentPage changes
+      useEffect(() => {
+        getAllMovies()
+      }, [ currentPage ])
+      // here we passed currentPage so that whenever currentPage changes the api call will be made
     const addToWatchList = (movies) => {
         const newWatchList = [...watchList];
         newWatchList.push(movies);
@@ -53,10 +58,7 @@ function Movies() {
         localStorage.setItem("imdb", JSON.stringify(newWatchList));
         setWatchList(newWatchList);
     }
-    //this useEffect will becalled only when currentPage changes
-    useEffect( ()=> {
-        getAllMovies();
-    },[currentPage]);  // here we passed currentPage so that whenever currentPage changes the api call will be made
+  
     
     const watchListIds = watchList.map((movie)=> movie.id);
    
