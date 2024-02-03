@@ -1,3 +1,14 @@
+/* steps to include tailwind css 
+1. npm install -D tailwindcss
+2. npx tailwindcss init    -> to generate config file(tailwind.conig.js)
+3. inside tailwind config file add inside content 
+4. now inside index.css add following
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+*/
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

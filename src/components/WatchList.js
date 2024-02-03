@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function WatchList() {
 
@@ -6,29 +6,6 @@ function WatchList() {
     const [selectedGenre, setSelectedGenre] = useState(null);
     const [searchStr, setSearchStr] = useState("");
     const [sortstate, setSortstate] = useState(0);
-    console.log(selectedGenre);
-    // const mockWatcList =[
-    //     {
-    //         "adult": false,
-    //         "backdrop_path": "/r9oTasGQofvkQY5vlUXglneF64Z.jpg",
-    //         "id": 1029575,
-    //         "title": "The Family Plan",
-    //         "original_language": "en",
-    //         "original_title": "The Family Plan",
-    //         "overview": "Dan Morgan is many things: a devoted husband, a loving father, a celebrated car salesman. He's also a former assassin. And when his past catches up to his present, he's forced to take his unsuspecting family on a road trip unlike any other.",
-    //         "poster_path": "/jLLtx3nTRSLGPAKl4RoIv1FbEBr.jpg",
-    //         "media_type": "movie",
-    //         "genre_ids": [
-    //             28,
-    //             35
-    //         ],
-    //         "popularity": 83.703,
-    //         "release_date": "2023-12-14",
-    //         "video": false,
-    //         "vote_average": 5.9,
-    //         "vote_count": 9
-    //     }
-    // ]
     let genreIds = {
         
                 28: "Action",
@@ -62,13 +39,16 @@ function WatchList() {
     const filteredWatchList = watchList.filter((item)=> {
         const allGenreIds = item.genre_ids;
         const genreNames = allGenreIds.map((id)=> genreIds[id]);
+        // find out the selected genre in the genreNames if null then return true to show all the genre
         return  selectedGenre ? genreNames.includes(selectedGenre): true;
     })
+
+    // search in watchlist implementation
     const filteredWatchListAndSearched = filteredWatchList.filter((item)=> {
         return item.original_title.toLowerCase().includes(searchStr);
     })
     let filteredWatchlistSearchedAndSorted = filteredWatchListAndSearched;
-
+    // 1 means ascending and -1 means descending
     if(sortstate === 1) {
         filteredWatchlistSearchedAndSorted = filteredWatchlistSearchedAndSorted.sort((objA, objB)=> {
             return objB.vote_average - objA.vote_average;
@@ -81,7 +61,7 @@ function WatchList() {
         })
     }
     const deleteFromWatchList = (movies) => {
-        const newWatchList = filteredWatchlistSearchedAndSorted.filter((movie)=> {
+        const newWatchList = watchList.filter((movie)=> {
             return movie.id !== movies.id
         });
         localStorage.setItem("imdb", JSON.stringify(newWatchList));
@@ -107,8 +87,17 @@ function WatchList() {
             {name}
             </button>
            ))}
+           <button 
+            onClick={()=> {
+                setSelectedGenre(null)
+            }}
+            key="reset"
+            className= "m-2 text-lg bg-red-400 hover:bg-blue-400 p-1 text-white rounded-xl font-bold"> 
+            Reset
+            </button>
         
         </div>
+        {/* search div */}
         <div className="text-center">
                 <input
                 type="text"
@@ -118,6 +107,8 @@ function WatchList() {
                 onChange={(e)=>setSearchStr(e.target.value)}
                 />
         </div>
+
+        {/* //table */}
         <div className="rounded-lg  border border-gray-200 m-5 shadow-md">
             <table className=" border-collapse w-full bg-white text-sm  text-gray-500">
                 <thead className="bg-gray-50">
@@ -126,7 +117,7 @@ function WatchList() {
                         <th className="border border-slate-300">Image</th>
                         <th className="border border-slate-300" >
                             <div className="flex space-x-3 ">
-                            <img
+                            <img alt="sort-asc"
                             src="https://cdn-icons-png.flaticon.com/512/61/61148.png"
                             className="mr-1 ml-6 w-[1rem] h-[1.2rem]"
                             onClick={()=> {
@@ -134,7 +125,7 @@ function WatchList() {
                             }}
                             />
                             Ratings
-                            <img
+                            <img alt="sort-desc"
                             src="https://icon-library.com/images/dropdown-arrow-icon/dropdown-arrow-icon-11.jpg"
                             className="mr-1 w-[1rem] h-[1.2rem]"
                             onClick={()=> {
@@ -159,6 +150,7 @@ function WatchList() {
                         </td>
                         <td className="border border-slate-300">{watchList.vote_average}</td>
                         <td className="border border-slate-300">{watchList.popularity}</td>
+                        {/* genre ids to genre names from ["action", "romance"] to "action, romance" using join method */}
                         <td className="border border-slate-300">{watchList.genre_ids.map((id)=> genreIds[id]).join(", ")}</td>
                         <td className="border border-slate-300">
                             <button className="text-red-600"
